@@ -1,0 +1,19 @@
+{
+  "name": "farm",
+  "version": "1.0.0",
+  "description": "The game logic for my little idle farming game.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TimLeach635/farm.git"
+  },
+  "author": "Tim Leach",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/TimLeach635/farm/issues"
+  },
+  "homepage": "https://github.com/TimLeach635/farm#readme"
+}
