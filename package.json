@@ -1,6 +1,6 @@
 {
   "name": "farm",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "The game logic for my little idle farming game.",
   "main": "index.js",
   "scripts": {
