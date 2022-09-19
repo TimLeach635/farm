@@ -2,7 +2,7 @@
   "name": "farm",
   "version": "0.0.1",
   "description": "The game logic for my little idle farming game.",
-  "main": "index.js",
+  "main": "dist/game.js",
   "scripts": {
     "build": "esbuild src/engine.ts --bundle --platform=node --outfile=dist/game.js",
     "build-and-start": "npm run build && npm run start",

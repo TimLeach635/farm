@@ -4,16 +4,26 @@ import { Farm } from "../components/farm";
 
 const farmQuery = defineQuery([Farm]);
 
-export const autoHarvestSystem = (world: World) => {
-  const farms = farmQuery(world);
-  farms.forEach((farm) => {
-    if (Farm.state[farm] !== 3 /* ready to harvest */) return;
+export const generateAutoHarvestSystem = (
+  harvestCallback: (farmId: number, cropId: number) => void
+): ((world: World) => World) => {
+  return (world: World) => {
+    const farms = farmQuery(world);
+    farms.forEach((farm) => {
+      if (Farm.state[farm] !== 3 /* ready to harvest */) return;
 
-    console.debug(`Harvesting farm ${farm} containing crop ${Farm.crop[farm]}`);
+      harvestCallback(farm, Farm.crop[farm]);
 
-    Farm.state[farm] = 2;  // jump immediately back to "growing"
-    Farm.growthTime[farm] = 0;
-  });
+      Farm.state[farm] = 2;  // jump immediately back to "growing"
+      Farm.growthTime[farm] = 0;
+    });
 
-  return world;
+    return world;
+  }
 }
+
+export const autoHarvestSystem = generateAutoHarvestSystem(
+  (farmId, cropId) => {
+    console.debug(`Harvesting farm ${farmId} containing crop ${cropId}`);
+  }
+);
