@@ -3,7 +3,7 @@ import { farmComponent } from "../components/farm";
 import { addComponent, addEntity, IWorld } from "bitecs";
 import { areaComponent } from "../components/area";
 
-type FarmState =
+export type FarmState =
   "uncreated" |
   "plowed" |
   "growing" |

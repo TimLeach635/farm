@@ -1,22 +1,18 @@
-import world, { World } from "./world";
-import { farmGrowthSystem } from "./systems/farm";
+import World from "./world";
 import { generateAutoHarvestSystem } from "./systems/debug";
-import { timeSystem } from "./systems/time";
 
 export function initialise(
   harvestCallback: (farmId: number, cropId: number) => void
 ): World {
-  world.time = {
-    delta: 0,
-    elapsed: 0,
-    then: performance.now(),
-  };
+  const world = new World(generateAutoHarvestSystem(harvestCallback));
 
-  setInterval(() => {
-    farmGrowthSystem(world);
-    generateAutoHarvestSystem(harvestCallback)(world);
-    timeSystem(world);
-  }, 16);
+  // Crops
+  const wheat = world.addCrop(3);
+  const lettuce = world.addCrop(2);
+
+  // Farms
+  world.addFarm("growing", wheat.ecsId, 0);
+  world.addFarm("growing", lettuce.ecsId, 0);
 
   return world;
 }

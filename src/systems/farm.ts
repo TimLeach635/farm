@@ -1,11 +1,11 @@
 import { farmComponent } from "../components/farm";
 import { defineQuery } from "bitecs";
-import { World } from "../world";
+import { ITimeWorld } from "../world";
 import { cropComponent } from "../components/crop";
 
 const farmQuery = defineQuery([farmComponent]);
 
-export const farmGrowthSystem = (world: World) => {
+export const farmGrowthSystem = (world: ITimeWorld) => {
   const farms = farmQuery(world);
 
   farms.forEach((farm) => {

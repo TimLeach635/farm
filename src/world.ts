@@ -1,8 +1,12 @@
-import { createWorld, IWorld } from "bitecs";
-import { addFarm } from "./gameObjects/farm";
-import { addCrop } from "./gameObjects/crop";
+import { createWorld, IWorld, pipe } from "bitecs";
+import { addFarm, Farm, FarmState } from "./gameObjects/farm";
+import { addCrop, Crop } from "./gameObjects/crop";
+import { farmGrowthSystem } from "./systems/farm";
+import { timeSystem } from "./systems/time";
 
-export interface World extends IWorld {
+const GAME_TICK_MS = 16;
+
+export interface ITimeWorld extends IWorld {
   time: {
     delta: number;
     elapsed: number;
@@ -10,14 +14,40 @@ export interface World extends IWorld {
   };
 }
 
-const world = createWorld<World>();
+export class World {
+  world: ITimeWorld;
+  crops: Crop[] = [];
+  farms: Farm[] = [];
+  pipeline;
 
-// Crops
-const wheat = addCrop(world, 3);
-const lettuce = addCrop(world, 2);
+  constructor(...debugSystems: ((world: IWorld) => IWorld)[]) {
+    this.world = createWorld<ITimeWorld>();
+    this.world.time = {
+      delta: 0,
+      elapsed: 0,
+      then: performance.now(),
+    };
 
-// Farms
-addFarm(world, "growing", wheat.ecsId, 0);
-addFarm(world, "growing", lettuce.ecsId, 0);
+    this.pipeline = pipe(
+      farmGrowthSystem,
+      ...debugSystems,
+      timeSystem,
+    );
 
-export default world;
+    setInterval(() => this.pipeline(this.world), GAME_TICK_MS);
+  }
+
+  addCrop(growthTime: number): Crop {
+    const newCrop: Crop = addCrop(this.world, growthTime);
+    this.crops.push(newCrop);
+    return newCrop;
+  }
+
+  addFarm(state: FarmState, cropId: number, growthTime: number) {
+    const newFarm: Farm = addFarm(this.world, state, cropId, growthTime);
+    this.farms.push(newFarm);
+    return newFarm;
+  }
+}
+
+export default World;

@@ -1,14 +1,6 @@
-import { World } from "../world";
+import { ITimeWorld } from "../world";
 
-export const timeSystem = (world: World) => {
-  if (world.time === undefined) {
-    world.time = {
-      delta: 0,
-      elapsed: 0,
-      then: performance.now(),
-    };
-  }
-
+export const timeSystem = (world: ITimeWorld) => {
   const now = performance.now();  // this is in milliseconds
   const delta = (now - world.time.then) / 1000;  // delta is in seconds
 
