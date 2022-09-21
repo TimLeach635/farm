@@ -1,8 +1,8 @@
 import { World } from "../world";
 import { defineQuery } from "bitecs";
-import { Farm } from "../components/farm";
+import { farmComponent } from "../components/farm";
 
-const farmQuery = defineQuery([Farm]);
+const farmQuery = defineQuery([farmComponent]);
 
 export const generateAutoHarvestSystem = (
   harvestCallback: (farmId: number, cropId: number) => void
@@ -10,12 +10,12 @@ export const generateAutoHarvestSystem = (
   return (world: World) => {
     const farms = farmQuery(world);
     farms.forEach((farm) => {
-      if (Farm.state[farm] !== 3 /* ready to harvest */) return;
+      if (farmComponent.state[farm] !== 3 /* ready to harvest */) return;
 
-      harvestCallback(farm, Farm.crop[farm]);
+      harvestCallback(farm, farmComponent.crop[farm]);
 
-      Farm.state[farm] = 2;  // jump immediately back to "growing"
-      Farm.growthTime[farm] = 0;
+      farmComponent.state[farm] = 2;  // jump immediately back to "growing"
+      farmComponent.growthTime[farm] = 0;
     });
 
     return world;

@@ -1,22 +1,22 @@
-import { Farm } from "../components/farm";
+import { farmComponent } from "../components/farm";
 import { defineQuery } from "bitecs";
 import { World } from "../world";
 import { Crop } from "../components/crop";
 
-const farmQuery = defineQuery([Farm]);
+const farmQuery = defineQuery([farmComponent]);
 
 export const farmGrowthSystem = (world: World) => {
   const farms = farmQuery(world);
 
   farms.forEach((farm) => {
-    if (Farm.state[farm] !== 2 /* growing */) return;
+    if (farmComponent.state[farm] !== 2 /* growing */) return;
 
 
-    Farm.growthTime[farm] += world.time.delta;
+    farmComponent.growthTime[farm] += world.time.delta;
 
-    if (Farm.growthTime[farm] > Crop.growthTime[Farm.crop[farm]]) {
-      Farm.state[farm] = 3;  // ready to harvest
-      Farm.growthTime[farm] = 0;
+    if (farmComponent.growthTime[farm] > Crop.growthTime[farmComponent.crop[farm]]) {
+      farmComponent.state[farm] = 3;  // ready to harvest
+      farmComponent.growthTime[farm] = 0;
     }
   });
 
