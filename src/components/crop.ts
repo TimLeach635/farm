@@ -4,4 +4,4 @@ const CropSchema: ISchema = {
   growthTime: Types.f32,
 };
 
-export const Crop = defineComponent(CropSchema);
+export const cropComponent = defineComponent(CropSchema);
