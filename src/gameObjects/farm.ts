@@ -18,16 +18,24 @@ const farmStateMapping: { [key: number]: FarmState } = {
   4: "harvested",
 };
 
+export const getFarmState = (key: number): FarmState => {
+  return farmStateMapping[key];
+}
+
+export const getFarmStateKey = (state: FarmState): number => {
+  return parseInt(
+    Object
+      .keys(farmStateMapping)
+      .find(key => farmStateMapping[key] === state)
+  );
+}
+
 export class Farm extends GameObject {
   get state(): FarmState {
-    return farmStateMapping[farmComponent.state[this.ecsId]];
+    return getFarmState(farmComponent.state[this.ecsId]);
   }
   set state(newState: FarmState) {
-    farmComponent.state[this.ecsId] = parseInt(
-      Object
-        .keys(farmStateMapping)
-        .find(key => farmStateMapping[key] === newState)
-    );
+    farmComponent.state[this.ecsId] = getFarmStateKey(newState);
   }
 
   get cropId(): number {
