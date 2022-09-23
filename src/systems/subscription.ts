@@ -15,6 +15,7 @@ export interface WorldState {
   };
   crops: CropState[];
   farms: {
+    id: number;
     state: FarmState;
     crop: CropState;
     growthTime: number;
@@ -32,6 +33,7 @@ const generateWorldState = (world: ITimeWorld): WorldState => {
   }));
   const farmIds = farmQuery(world);
   const farmStates = farmIds.map(farmId => ({
+    id: farmId,
     state: getFarmState(farmComponent.state[farmId]),
     crop: cropStates.find(cropState => cropState.id === farmComponent.crop[farmId]),
     growthTime: farmComponent.growthTime[farmId],
