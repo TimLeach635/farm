@@ -6,6 +6,7 @@ import { cropComponent } from "../components/crop";
 
 interface CropState {
   id: number;
+  name: string;
   growthTime: number;
 }
 
@@ -25,10 +26,11 @@ export interface WorldState {
 const cropQuery = defineQuery([cropComponent]);
 const farmQuery = defineQuery([farmComponent]);
 
-const generateWorldState = (world: ITimeWorld): WorldState => {
+const generateWorldState = (world: ITimeWorld, stringMap: { [key: number]: string }): WorldState => {
   const cropIds = cropQuery(world);
   const cropStates: CropState[] = cropIds.map(cropId => ({
     id: cropId,
+    name: stringMap[cropComponent.name[cropId]],
     growthTime: cropComponent.growthTime[cropId],
   }));
   const farmIds = farmQuery(world);
@@ -48,9 +50,12 @@ const generateWorldState = (world: ITimeWorld): WorldState => {
   }
 }
 
-export const subscriptionSystem: System<((worldState: WorldState) => void)[]> = defineSystem(
-  (world: ITimeWorld, ...callbacks): ITimeWorld => {
-    const worldState = generateWorldState(world);
+export const subscriptionSystem: System<[
+  {[key: number]: string},
+  ...((worldState: WorldState) => void)[]
+]> = defineSystem(
+  (world: ITimeWorld, stringMap, ...callbacks): ITimeWorld => {
+    const worldState = generateWorldState(world, stringMap);
 
     callbacks.forEach(callback => {
       callback(worldState);

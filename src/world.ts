@@ -20,8 +20,12 @@ export class World {
   crops: Crop[] = [];
   farms: Farm[] = [];
   pipeline;
+
   subscriptions: { [key: number]: (worldState: WorldState) => void } = {};
-  nextId: number = 0;
+  nextSubscriptionId: number = 0;
+
+  strings: { [key: number]: string } = {};
+  nextStringId: number = 0;
 
   constructor(...debugSystems: ((world: IWorld) => IWorld)[]) {
     this.world = createWorld<ITimeWorld>();
@@ -39,12 +43,19 @@ export class World {
 
     setInterval(() => {
       this.pipeline(this.world);
-      subscriptionSystem(this.world, ...Object.values(this.subscriptions));
+      subscriptionSystem(this.world, this.strings, ...Object.values(this.subscriptions));
     }, GAME_TICK_MS);
   }
 
-  addCrop(growthTime: number): Crop {
-    const newCrop: Crop = addCrop(this.world, growthTime);
+  addString(string: string): number {
+    const id = this.nextStringId;
+    this.strings[id] = string;
+    this.nextStringId++;
+    return id;
+  }
+
+  addCrop(growthTime: number, name: string): Crop {
+    const newCrop: Crop = addCrop(this.world, this.addString(name), growthTime);
     this.crops.push(newCrop);
     return newCrop;
   }
@@ -56,9 +67,9 @@ export class World {
   }
 
   subscribe(callback: (worldState: WorldState) => void): number {
-    const id = this.nextId;
+    const id = this.nextSubscriptionId;
     this.subscriptions[id] = callback;
-    this.nextId++;
+    this.nextSubscriptionId++;
     return id;
   }
 

@@ -7,8 +7,8 @@ export function initialise(
   const world = new World(generateAutoHarvestSystem(harvestCallback));
 
   // Crops
-  const wheat = world.addCrop(3);
-  const lettuce = world.addCrop(2);
+  const wheat = world.addCrop(3, "wheat");
+  const lettuce = world.addCrop(2, "lettuce");
 
   // Farms
   world.addFarm("growing", wheat.ecsId, 0);
