@@ -11,8 +11,14 @@ export function initialise(
   const lettuce = world.addCrop(2, "lettuce");
 
   // Farms
-  world.addFarm("growing", wheat.ecsId, 0);
-  world.addFarm("growing", lettuce.ecsId, 0);
+  world.addFarm("growing", wheat.ecsId, 0, {
+    bottomLeft: { x: 0, y: 0 },
+    size: { x: 100, y: 100 },
+  });
+  world.addFarm("growing", lettuce.ecsId, 0, {
+    bottomLeft: { x: 110, y: 0 },
+    size: { x: 100, y: 100 },
+  });
 
   return world;
 }

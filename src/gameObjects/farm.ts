@@ -2,6 +2,7 @@ import { GameObject } from "./gameObject";
 import { farmComponent } from "../components/farm";
 import { addComponent, addEntity, IWorld } from "bitecs";
 import { areaComponent } from "../components/area";
+import { Rectangle2f } from "./common";
 
 export type FarmState =
   "uncreated" |
@@ -51,13 +52,35 @@ export class Farm extends GameObject {
   set growthTime(newGrowthTime: number) {
     farmComponent.growthTime[this.ecsId] = newGrowthTime;
   }
+
+  get area(): Rectangle2f {
+    return {
+      bottomLeft: {
+        x: areaComponent.bottomLeft.x[this.ecsId],
+        y: areaComponent.bottomLeft.y[this.ecsId],
+      },
+      size: {
+        x: areaComponent.size.x[this.ecsId],
+        y: areaComponent.size.y[this.ecsId],
+      },
+    }
+  }
+  set area({ bottomLeft, size }: Rectangle2f)
+  {
+    areaComponent.bottomLeft.x[this.ecsId] = bottomLeft.x;
+    areaComponent.bottomLeft.y[this.ecsId] = bottomLeft.y;
+    areaComponent.size.x[this.ecsId] = size.x;
+    areaComponent.size.y[this.ecsId] = size.y;
+  }
 }
+
 
 export const addFarm = (
   world: IWorld,
   state: FarmState,
   cropId: number,
-  growthTime: number
+  growthTime: number,
+  area: Rectangle2f
 ): Farm => {
   const newFarmEcsId = addEntity(world);
   addComponent(world, farmComponent, newFarmEcsId);
@@ -67,6 +90,7 @@ export const addFarm = (
   proxy.state = state;
   proxy.cropId = cropId;
   proxy.growthTime = growthTime;
+  proxy.area = area;
 
   return proxy;
 }

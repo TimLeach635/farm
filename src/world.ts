@@ -4,6 +4,7 @@ import { addCrop, Crop } from "./gameObjects/crop";
 import { farmGrowthSystem } from "./systems/farm";
 import { timeSystem } from "./systems/time";
 import { subscriptionSystem, WorldState } from "./systems/subscription";
+import { Rectangle2f } from "./gameObjects/common";
 
 const GAME_TICK_MS = 16;
 
@@ -60,8 +61,8 @@ export class World {
     return newCrop;
   }
 
-  addFarm(state: FarmState, cropId: number, growthTime: number) {
-    const newFarm: Farm = addFarm(this.world, state, cropId, growthTime);
+  addFarm(state: FarmState, cropId: number, growthTime: number, area: Rectangle2f) {
+    const newFarm: Farm = addFarm(this.world, state, cropId, growthTime, area);
     this.farms.push(newFarm);
     return newFarm;
   }

@@ -1,8 +1,10 @@
 import { defineQuery, defineSystem, System } from "bitecs";
-import { FarmState, getFarmState } from "../gameObjects/farm";
+import { FarmState as FarmGrowthState, getFarmState } from "../gameObjects/farm";
 import { ITimeWorld } from "../world";
 import { farmComponent } from "../components/farm";
 import { cropComponent } from "../components/crop";
+import { Rectangle2f } from "../gameObjects/common";
+import { areaComponent } from "../components/area";
 
 interface CropState {
   id: number;
@@ -10,17 +12,20 @@ interface CropState {
   growthTime: number;
 }
 
+interface FarmState {
+  id: number;
+  state: FarmGrowthState;
+  crop: CropState;
+  growthTime: number;
+  area: Rectangle2f;
+}
+
 export interface WorldState {
   time: {
     elapsed: number;
   };
   crops: CropState[];
-  farms: {
-    id: number;
-    state: FarmState;
-    crop: CropState;
-    growthTime: number;
-  }[];
+  farms: FarmState[];
 }
 
 const cropQuery = defineQuery([cropComponent]);
@@ -34,11 +39,21 @@ const generateWorldState = (world: ITimeWorld, stringMap: { [key: number]: strin
     growthTime: cropComponent.growthTime[cropId],
   }));
   const farmIds = farmQuery(world);
-  const farmStates = farmIds.map(farmId => ({
+  const farmStates: FarmState[] = farmIds.map(farmId => ({
     id: farmId,
     state: getFarmState(farmComponent.state[farmId]),
     crop: cropStates.find(cropState => cropState.id === farmComponent.crop[farmId]),
     growthTime: farmComponent.growthTime[farmId],
+    area: {
+      bottomLeft: {
+        x: areaComponent.bottomLeft.x[farmId],
+        y: areaComponent.bottomLeft.y[farmId],
+      },
+      size: {
+        x: areaComponent.size.x[farmId],
+        y: areaComponent.size.y[farmId],
+      },
+    }
   }));
 
   return {
